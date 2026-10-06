@@ -46,6 +46,8 @@ class _SuperAdminDashboardState extends State<SuperAdminDashboard> {
   final capabilityCtrl = TextEditingController(text: 'crop_diagnosis');
   final modelProviderCtrl = TextEditingController(text: 'openai');
   final modelCtrl = TextEditingController();
+  final settingKeyCtrl = TextEditingController();
+  final settingValueCtrl = TextEditingController();
   bool busy = false;
 
   Future<void> _call(String name, Map<String,dynamic> data) async {
@@ -136,6 +138,35 @@ class _SuperAdminDashboardState extends State<SuperAdminDashboard> {
                   title:Text('\${x['capability'] ?? d.id}'),
                   subtitle:Text('\${x['provider'] ?? ''} • \${x['model'] ?? ''}'),
                   trailing:Text(x['enabled']==false?'Off':'On'),
+                ));
+              }).toList());
+            },
+          ),
+          const SizedBox(height: 18),
+          const _AdminSectionTitle('System settings'),
+          TextField(controller: settingKeyCtrl, decoration: const InputDecoration(labelText:'Setting key')),
+          const SizedBox(height: 8),
+          TextField(controller: settingValueCtrl, decoration: const InputDecoration(labelText:'Value')),
+          const SizedBox(height: 8),
+          FilledButton.icon(
+            onPressed: busy ? null : ()=>_call('updateSystemSetting',{
+              'key':settingKeyCtrl.text,
+              'value':settingValueCtrl.text,
+            }),
+            icon: const Icon(Icons.settings_suggest_outlined),
+            label: const Text('Save setting'),
+          ),
+          const SizedBox(height: 12),
+          StreamBuilder<QuerySnapshot<Map<String,dynamic>>>(
+            stream: db.collection('system_settings').snapshots(),
+            builder:(context,snap){
+              final docs=snap.data?.docs ?? [];
+              return Column(children:docs.map((d){
+                final x=d.data();
+                return Card(child:ListTile(
+                  leading:const Icon(Icons.tune),
+                  title:Text(d.id),
+                  subtitle:Text((x['value'] ?? '').toString()),
                 ));
               }).toList());
             },
