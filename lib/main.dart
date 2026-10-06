@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'rpg/live_rpg_page.dart';
+import 'admin/super_admin_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,6 +55,11 @@ class _FarmShellState extends State<FarmShell> {
         ]),
         actions: [
           IconButton(onPressed: () {}, icon: const Icon(Icons.notifications_none_rounded)),
+          IconButton(
+            tooltip: 'Super Admin',
+            onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SuperAdminGate())),
+            icon: const Icon(Icons.admin_panel_settings_outlined),
+          ),
         ],
       ),
       body: pages[index],
