@@ -16,6 +16,7 @@ export const ingestIotTelemetry = onRequest(async (req, res) => {
 
   const raw = JSON.stringify(req.body ?? {});
   const farmId = String(req.body?.farmId ?? '');
+  const fieldId = String(req.body?.fieldId ?? '');
   const deviceId = String(req.body?.deviceId ?? '');
   const secret = process.env.IOT_SHARED_SECRET ?? '';
   const signature = String(req.get('x-device-signature') ?? '');
@@ -51,19 +52,27 @@ export const ingestIotTelemetry = onRequest(async (req, res) => {
   }
 
   const applied = Number(req.body?.waterAppliedLiters ?? 0);
-  const target = Number(req.body?.waterTargetLiters ?? 0);
-  if (target > 0 && applied >= 0) {
-    const efficiency = Math.max(0, Math.min(1, 1 - Math.abs(applied - target) / target));
-    await db.collection('verification_events').add({
-      farmId,
-      fieldId: req.body?.fieldId ?? null,
-      kind: 'water_efficiency',
-      value: efficiency,
-      verified: true,
-      source: 'esp32_iot',
-      sourceRef: telemetryRef.id,
-      createdAt: FieldValue.serverTimestamp(),
-    });
+  if (fieldId && applied >= 0) {
+    const targetSnap = await db.collection('field_water_targets').doc(fieldId).get();
+    const target = Number(targetSnap.data()?.targetLiters ?? 0);
+    const targetFarmId = String(targetSnap.data()?.farmId ?? '');
+    const confidence = Number(targetSnap.data()?.confidence ?? 0);
+
+    if (target > 0 && targetFarmId === farmId && confidence >= 0.6) {
+      const efficiency = Math.max(0, Math.min(1, 1 - Math.abs(applied - target) / target));
+      await db.collection('verification_events').add({
+        farmId,
+        fieldId,
+        deviceId,
+        kind: 'water_efficiency',
+        value: efficiency,
+        verified: true,
+        source: 'iot_plus_weather_target',
+        sourceRef: telemetryRef.id,
+        targetRef: fieldId,
+        createdAt: FieldValue.serverTimestamp(),
+      });
+    }
   }
 
   return res.json({ok:true, telemetryId:telemetryRef.id});
