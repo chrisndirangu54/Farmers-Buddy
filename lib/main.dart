@@ -309,15 +309,34 @@ class AiCard extends StatelessWidget {
 }
 
 
-class GamePage extends StatelessWidget {
+class GamePage extends StatefulWidget {
   const GamePage({super.key});
 
-  static const quests = [
-    {'title':'Water Guardian', 'detail':'Keep irrigation within the crop water target for 3 days.', 'xp':'+180 XP', 'progress':0.67},
-    {'title':'Scout Before It Spreads', 'detail':'Complete 3 verified crop-health scans this week.', 'xp':'+120 XP', 'progress':0.33},
-    {'title':'Healthy Harvest', 'detail':'Reach harvest readiness with no unresolved high-risk alerts.', 'xp':'+350 XP', 'progress':0.76},
-    {'title':'Sensor Steward', 'detail':'Keep all connected farm devices healthy for 7 days.', 'xp':'+150 XP', 'progress':0.86},
-    {'title':'Climate-Smart Week', 'detail':'Complete weather-aware field tasks without unnecessary watering.', 'xp':'+240 XP', 'progress':0.58},
+  @override
+  State<GamePage> createState() => _GamePageState();
+}
+
+class _GamePageState extends State<GamePage> {
+  int tab = 0;
+
+  static const fields = [
+    {'name':'North Plot', 'crop':'Maize', 'level':8, 'xp':'1,940 / 2,400', 'health':'Thriving', 'stage':'Tasseling', 'progress':0.81, 'trait':'Water Wise'},
+    {'name':'Greenhouse A', 'crop':'Tomato', 'level':12, 'xp':'3,480 / 4,000', 'health':'Watch', 'stage':'Fruit Set', 'progress':0.87, 'trait':'Yield Hunter'},
+    {'name':'Hydroponics Bay', 'crop':'Lettuce', 'level':6, 'xp':'980 / 1,400', 'health':'Stable', 'stage':'Leaf Expansion', 'progress':0.70, 'trait':'Precision Grower'},
+  ];
+
+  static const companions = [
+    {'name':'Maji', 'type':'Soil Scout', 'icon':'💧', 'bond':'Lv. 7', 'status':'Moisture sensing', 'perk':'+5% Water Quest XP'},
+    {'name':'Jua', 'type':'Climate Sentinel', 'icon':'☀️', 'bond':'Lv. 5', 'status':'Light + temperature', 'perk':'Early heat warning'},
+    {'name':'Nyuki', 'type':'Crop Watcher', 'icon':'🐝', 'bond':'Lv. 9', 'status':'Camera + pest trap', 'perk':'Pest streak protection'},
+    {'name':'Mlinzi', 'type':'Gateway Guardian', 'icon':'🤖', 'bond':'Lv. 4', 'status':'ESP32 online', 'perk':'Device uptime bonus'},
+  ];
+
+  static const missions = [
+    {'title':'Establishment: Protect Emergence', 'detail':'Verify stand count, moisture stability and early pest pressure.', 'xp':'+220 XP', 'progress':0.80, 'stage':'Week 1–3'},
+    {'title':'Vegetative Push', 'detail':'Keep crop health above target while minimizing unnecessary irrigation.', 'xp':'+300 XP', 'progress':0.55, 'stage':'Vegetative'},
+    {'title':'Flower & Fruit Defense', 'detail':'Complete scouting, nutrition and heat-stress checks during the critical reproductive window.', 'xp':'+420 XP', 'progress':0.38, 'stage':'Flowering'},
+    {'title':'Harvest Window', 'detail':'Confirm maturity, quality, buyer/logistics readiness and zero unresolved critical alerts.', 'xp':'+600 XP', 'progress':0.20, 'stage':'Harvest'},
   ];
 
   @override
@@ -325,91 +344,292 @@ class GamePage extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        const Text('Farm League', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800)),
-        const SizedBox(height: 4),
-        Text(
-          'Earn progress for verified agronomic actions, efficient resource use, crop-health improvements and learning.',
-          style: TextStyle(color: Colors.grey.shade700),
-        ),
+        Row(children: [
+          const Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('Farm RPG', style: TextStyle(fontSize: 25, fontWeight: FontWeight.w900)),
+            SizedBox(height: 3),
+            Text('Your real farm evolves as verified agronomic performance improves.'),
+          ])),
+          Chip(
+            avatar: const Icon(Icons.shield_moon_outlined, size: 18),
+            label: const Text('Season 04'),
+          ),
+        ]),
         const SizedBox(height: 14),
+
         Container(
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
-            gradient: const LinearGradient(colors: [Color(0xFF123B22), Color(0xFF2E7D32)]),
+            gradient: const LinearGradient(colors: [Color(0xFF0F3C24), Color(0xFF2E7D32)]),
             borderRadius: BorderRadius.circular(22),
           ),
           child: const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(children: [
-              CircleAvatar(radius: 27, backgroundColor: Colors.white24, child: Icon(Icons.agriculture, color: Colors.white)),
+              CircleAvatar(radius: 28, backgroundColor: Colors.white24, child: Icon(Icons.agriculture, color: Colors.white)),
               SizedBox(width: 12),
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text('Level 12 • Regenerative Grower', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 17)),
+                Text('Level 12 • Regenerative Grower', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 17)),
                 SizedBox(height: 3),
-                Text('4,820 XP • 9-day verified streak', style: TextStyle(color: Colors.white70)),
+                Text('Title equipped: Water Steward', style: TextStyle(color: Colors.white70)),
               ])),
               Icon(Icons.local_fire_department, color: Colors.amberAccent),
             ]),
             SizedBox(height: 14),
-            ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(99)),
-              child: LinearProgressIndicator(value: 0.72, minHeight: 10, backgroundColor: Colors.white24),
-            ),
+            LinearProgressIndicator(value: 0.72, minHeight: 10, backgroundColor: Colors.white24),
             SizedBox(height: 6),
-            Text('680 XP to Level 13', style: TextStyle(color: Colors.white70, fontSize: 11)),
+            Text('4,820 XP • 680 XP to Level 13 • 9-day verified streak', style: TextStyle(color: Colors.white70, fontSize: 11)),
           ]),
         ),
+
+        const SizedBox(height: 14),
+        SegmentedButton<int>(
+          segments: const [
+            ButtonSegment(value:0, icon:Icon(Icons.landscape_outlined), label:Text('Farm')),
+            ButtonSegment(value:1, icon:Icon(Icons.pets_outlined), label:Text('Companions')),
+            ButtonSegment(value:2, icon:Icon(Icons.flag_outlined), label:Text('Season')),
+            ButtonSegment(value:3, icon:Icon(Icons.emoji_events_outlined), label:Text('League')),
+            ButtonSegment(value:4, icon:Icon(Icons.redeem_outlined), label:Text('Rewards')),
+          ],
+          selected: {tab},
+          showSelectedIcon: false,
+          onSelectionChanged: (s) => setState(() => tab = s.first),
+        ),
         const SizedBox(height: 16),
-        const Wrap(spacing: 9, runSpacing: 9, children: [
-          GameStat(icon: Icons.bolt, value:'4,820', label:'XP'),
-          GameStat(icon: Icons.local_fire_department, value:'9 days', label:'Streak'),
-          GameStat(icon: Icons.workspace_premium, value:'14', label:'Badges'),
-          GameStat(icon: Icons.water_drop, value:'12%', label:'Water saved'),
-        ]),
+
+        if (tab == 0) ...[
+          const SectionTitle('Evolving fields'),
+          ...fields.map((f) => FieldRpgCard(
+            name:f['name'] as String,
+            crop:f['crop'] as String,
+            level:f['level'] as int,
+            xp:f['xp'] as String,
+            health:f['health'] as String,
+            stage:f['stage'] as String,
+            progress:f['progress'] as double,
+            trait:f['trait'] as String,
+          )),
+          const SizedBox(height: 16),
+          const SectionTitle('Farm stats'),
+          const Wrap(spacing: 9, runSpacing: 9, children: [
+            GameStat(icon: Icons.eco, value:'84', label:'Farm vitality'),
+            GameStat(icon: Icons.water_drop, value:'A-', label:'Water efficiency'),
+            GameStat(icon: Icons.bug_report_outlined, value:'92%', label:'Scout coverage'),
+            GameStat(icon: Icons.memory, value:'96%', label:'Device reliability'),
+          ]),
+        ],
+
+        if (tab == 1) ...[
+          const SectionTitle('Sensor companions'),
+          const Text('Real devices gain bond levels from reliable uptime, useful observations and successful farm decisions. Companion bonuses never override agronomic safety rules.'),
+          const SizedBox(height: 10),
+          ...companions.map((c) => CompanionCard(
+            name:c['name'] as String,
+            type:c['type'] as String,
+            icon:c['icon'] as String,
+            bond:c['bond'] as String,
+            status:c['status'] as String,
+            perk:c['perk'] as String,
+          )),
+        ],
+
+        if (tab == 2) ...[
+          const SectionTitle('Seasonal crop campaign'),
+          const SeasonBanner(),
+          const SizedBox(height: 10),
+          ...missions.map((m) => SeasonalMissionCard(
+            title:m['title'] as String,
+            detail:m['detail'] as String,
+            xp:m['xp'] as String,
+            progress:m['progress'] as double,
+            stage:m['stage'] as String,
+          )),
+          const SizedBox(height: 10),
+          const Card(
+            child: ListTile(
+              leading: CircleAvatar(child: Icon(Icons.auto_awesome)),
+              title: Text('Dynamic mission generation'),
+              subtitle: Text('Missions can be generated from crop type, planting date, phenology, weather, satellite health, sensor events and unresolved field risks.'),
+            ),
+          ),
+        ],
+
+        if (tab == 3) ...[
+          const SectionTitle('Cooperative rankings'),
+          const LeagueRow(rank:'1', farm:'Green Valley Co-op', score:'9,840', badge:'Climate Champions'),
+          const LeagueRow(rank:'2', farm:'Kijani Growers', score:'9,110', badge:'Water Guardians'),
+          const LeagueRow(rank:'3', farm:'Your Cooperative', score:'8,760', badge:'Rising League'),
+          const LeagueRow(rank:'4', farm:'Highland Harvest', score:'8,420', badge:'Scout Masters'),
+          const SizedBox(height: 14),
+          const CommunityChallenge(
+            title:'County Water Challenge',
+            detail:'Collectively reduce avoidable irrigation by 100,000 L this month.',
+            progress:0.61,
+            reward:'Co-op trophy + sponsor reward pool',
+          ),
+          const CommunityChallenge(
+            title:'Pest Watch Network',
+            detail:'Submit 500 verified pest observations to improve local early-warning coverage.',
+            progress:0.43,
+            reward:'Scout title + cooperative XP',
+          ),
+        ],
+
+        if (tab == 4) ...[
+          const SectionTitle('Unlocks & practical rewards'),
+          const RewardCard(icon:Icons.title, title:'Farm titles', status:'Unlocked', detail:'Water Steward • Soil Builder • Climate-Smart Grower'),
+          const RewardCard(icon:Icons.palette_outlined, title:'Equipment skins', status:'3 owned', detail:'Cosmetic tractor, pump, sensor and greenhouse themes tied to achievements.'),
+          const RewardCard(icon:Icons.handyman_outlined, title:'Practical farm rewards', status:'Partner hook', detail:'Reward catalog can support seed discounts, sensor credits, soil tests, agronomy sessions, insurance or input vouchers.'),
+          const RewardCard(icon:Icons.workspace_premium_outlined, title:'Verified certificates', status:'Eligible', detail:'Season-completion certificates can summarize verified water, crop-health and learning achievements.'),
+          const SizedBox(height: 14),
+          const Card(
+            child: Padding(
+              padding: EdgeInsets.all(14),
+              child: Text('Practical rewards should be funded by cooperatives, agribusinesses, insurers, NGOs, development programs or sponsors. Reward eligibility must be based on verified events, not self-reported button presses.'),
+            ),
+          ),
+        ],
+
         const SizedBox(height: 18),
-        const SectionTitle('Active quests'),
-        ...quests.map((q) => QuestCard(
-          title: q['title'] as String,
-          detail: q['detail'] as String,
-          xp: q['xp'] as String,
-          progress: q['progress'] as double,
-        )),
-        const SizedBox(height: 18),
-        const SectionTitle('Badges'),
-        const Wrap(spacing: 10, runSpacing: 10, children: [
-          BadgeCard(icon: Icons.water_drop, title:'Water Wise', subtitle:'Efficient irrigation'),
-          BadgeCard(icon: Icons.bug_report_outlined, title:'Pest Scout', subtitle:'Early verified detection'),
-          BadgeCard(icon: Icons.satellite_alt, title:'Sky Farmer', subtitle:'Remote-sensing streak'),
-          BadgeCard(icon: Icons.recycling, title:'Soil Builder', subtitle:'Regenerative practices'),
-          BadgeCard(icon: Icons.memory, title:'Device Keeper', subtitle:'Reliable sensors'),
-          BadgeCard(icon: Icons.school_outlined, title:'Agri Scholar', subtitle:'Learning quests'),
-        ]),
-        const SizedBox(height: 18),
-        const SectionTitle('Community challenges'),
-        const CommunityChallenge(
-          title:'County Water Challenge',
-          detail:'Collectively reduce avoidable irrigation by 100,000 L this month.',
-          progress:0.61,
-          reward:'Community badge + sponsor rewards',
-        ),
-        const CommunityChallenge(
-          title:'Pest Watch',
-          detail:'Submit 500 verified pest observations to improve early-warning coverage.',
-          progress:0.43,
-          reward:'Scout badge + leaderboard XP',
-        ),
-        const SizedBox(height: 18),
-        const SectionTitle('Fair-play rules'),
+        const SectionTitle('RPG verification rules'),
         const Card(
           child: Padding(
             padding: EdgeInsets.all(14),
             child: Text(
-              'XP is awarded by trusted backend events, not client taps. Higher-value achievements require evidence from IoT telemetry, satellite observations, timestamped photos, verified farm records or approved learning tasks. Unsafe over-irrigation, chemical misuse or fabricated observations should never produce rewards.',
+              'Field XP, companion bond, league score and reward eligibility are awarded by trusted backend events. Evidence can include satellite observations, IoT telemetry, timestamped crop images, crop-cycle records, sensor uptime, harvest outcomes, agronomist/cooperative verification and completed learning modules. The system must not reward excessive irrigation, unsafe chemical use, data fabrication or risky actuator behavior.',
             ),
           ),
         ),
       ],
     );
   }
+}
+
+class FieldRpgCard extends StatelessWidget {
+  final String name, crop, xp, health, stage, trait;
+  final int level;
+  final double progress;
+  const FieldRpgCard({super.key, required this.name, required this.crop, required this.level, required this.xp, required this.health, required this.stage, required this.progress, required this.trait});
+
+  @override
+  Widget build(BuildContext context) => Card(
+    child: Padding(
+      padding: const EdgeInsets.all(14),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          CircleAvatar(child: Text('$level')),
+          const SizedBox(width: 10),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('$name • $crop', style: const TextStyle(fontWeight: FontWeight.w900)),
+            Text('Field Level $level • $stage', style: const TextStyle(fontSize: 11, color: Colors.grey)),
+          ])),
+          Chip(label: Text(health)),
+        ]),
+        const SizedBox(height: 9),
+        LinearProgressIndicator(value: progress, minHeight: 8),
+        const SizedBox(height: 6),
+        Row(children: [
+          Expanded(child: Text(xp, style: const TextStyle(fontSize: 10))),
+          Text('Trait: $trait', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700)),
+        ]),
+      ]),
+    ),
+  );
+}
+
+class CompanionCard extends StatelessWidget {
+  final String name, type, icon, bond, status, perk;
+  const CompanionCard({super.key, required this.name, required this.type, required this.icon, required this.bond, required this.status, required this.perk});
+
+  @override
+  Widget build(BuildContext context) => Card(
+    child: ListTile(
+      leading: CircleAvatar(child: Text(icon, style: const TextStyle(fontSize: 22))),
+      title: Text('$name • $type', style: const TextStyle(fontWeight: FontWeight.w800)),
+      subtitle: Text('$status\nPerk: $perk'),
+      isThreeLine: true,
+      trailing: Chip(label: Text(bond)),
+    ),
+  );
+}
+
+class SeasonBanner extends StatelessWidget {
+  const SeasonBanner({super.key});
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.all(14),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(16),
+      color: const Color(0xFFE8F5E9),
+    ),
+    child: const Row(children: [
+      CircleAvatar(child: Icon(Icons.calendar_month)),
+      SizedBox(width: 10),
+      Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text('Long Rains Campaign • Maize + Tomato', style: TextStyle(fontWeight: FontWeight.w900)),
+        SizedBox(height: 3),
+        Text('Missions advance with real crop stages, not arbitrary calendar days.', style: TextStyle(fontSize: 11)),
+      ])),
+      Text('41%', style: TextStyle(fontWeight: FontWeight.w900)),
+    ]),
+  );
+}
+
+class SeasonalMissionCard extends StatelessWidget {
+  final String title, detail, xp, stage;
+  final double progress;
+  const SeasonalMissionCard({super.key, required this.title, required this.detail, required this.xp, required this.progress, required this.stage});
+
+  @override
+  Widget build(BuildContext context) => Card(
+    child: Padding(
+      padding: const EdgeInsets.all(14),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          const Icon(Icons.flag_circle_outlined),
+          const SizedBox(width: 8),
+          Expanded(child: Text(title, style: const TextStyle(fontWeight: FontWeight.w900))),
+          Text(xp, style: const TextStyle(fontWeight: FontWeight.w900)),
+        ]),
+        const SizedBox(height: 4),
+        Text(stage, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700)),
+        const SizedBox(height: 4),
+        Text(detail, style: const TextStyle(fontSize: 11)),
+        const SizedBox(height: 9),
+        LinearProgressIndicator(value: progress, minHeight: 8),
+      ]),
+    ),
+  );
+}
+
+class LeagueRow extends StatelessWidget {
+  final String rank, farm, score, badge;
+  const LeagueRow({super.key, required this.rank, required this.farm, required this.score, required this.badge});
+
+  @override
+  Widget build(BuildContext context) => Card(
+    child: ListTile(
+      leading: CircleAvatar(child: Text(rank)),
+      title: Text(farm, style: const TextStyle(fontWeight: FontWeight.w800)),
+      subtitle: Text(badge),
+      trailing: Text(score, style: const TextStyle(fontWeight: FontWeight.w900)),
+    ),
+  );
+}
+
+class RewardCard extends StatelessWidget {
+  final IconData icon;
+  final String title, status, detail;
+  const RewardCard({super.key, required this.icon, required this.title, required this.status, required this.detail});
+
+  @override
+  Widget build(BuildContext context) => Card(
+    child: ListTile(
+      leading: CircleAvatar(child: Icon(icon)),
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w800)),
+      subtitle: Text(detail),
+      trailing: Chip(label: Text(status)),
+    ),
+  );
 }
 
 class GameStat extends StatelessWidget {
