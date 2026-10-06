@@ -139,3 +139,7 @@ export { scoreWeatherAwareIrrigation } from './pipelines/weather_irrigation';
 export { processHarvestRecord } from './pipelines/harvest';
 export { processAgronomistVerification } from './pipelines/agronomist';
 export { submitAgronomistVerification } from './pipelines/agronomist_callable';
+
+export { deriveWeatherWaterTarget } from './pipelines/weather_target';
+export { ingestWeatherSnapshot, ingestSatelliteObservation, ingestCropScanResult } from './pipelines/trusted_ingest';
+export { submitHarvestRecord, verifyHarvestRecord } from './pipelines/harvest_callable';
