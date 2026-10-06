@@ -8,6 +8,28 @@ service cloud.firestore {
         && request.auth.uid in get(/databases/$(database)/documents/farms/$(farmId)).data.memberUids;
     }
 
+
+    function isSuperAdmin() {
+      return signedIn() && request.auth.token.superAdmin == true;
+    }
+
+    match /admin_users/{id} {
+      allow read, write: if isSuperAdmin();
+    }
+    match /system_settings/{id} {
+      allow read, write: if isSuperAdmin();
+    }
+    match /model_configs/{id} {
+      allow read, write: if isSuperAdmin();
+    }
+    match /api_secret_metadata/{id} {
+      allow read, write: if isSuperAdmin();
+    }
+    match /admin_audit_logs/{id} {
+      allow read: if isSuperAdmin();
+      allow write: if false;
+    }
+
     match /users/{uid} {
       allow read, write: if signedIn() && request.auth.uid == uid;
     }
