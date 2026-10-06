@@ -50,3 +50,55 @@ Recommended collections: `users`, `farms`, `fields`, `crop_cycles`, `observation
 5. Run `flutter run`.
 
 The initial UI uses explicit demo-state values until verified data providers and devices are connected.
+
+
+## Gamification
+
+Farmers Buddy includes a gamification layer designed to reward real agronomic outcomes rather than simple app activity.
+
+### Core mechanics
+
+- XP and farmer levels
+- Verified streaks
+- Daily, weekly and seasonal quests
+- Skill badges
+- Farm-health milestones
+- Water-efficiency challenges
+- Crop-scanning and pest-scouting quests
+- Device-maintenance quests
+- Learning quests
+- Harvest-quality achievements
+- Community and county challenges
+- Cooperative competitions
+- Leaderboards based on verified performance
+- Sponsor or cooperative rewards where appropriate
+
+### Verification model
+
+High-value XP should be awarded by trusted backend events rather than direct client actions. Evidence can come from:
+
+- IoT telemetry
+- satellite or remote-sensing observations
+- timestamped/georeferenced crop photos
+- verified field records
+- sensor uptime
+- irrigation and water-flow measurements
+- completed agronomy lessons or quizzes
+- harvest records
+- cooperative or agronomist verification
+
+Recommended additional Firestore collections: `player_profiles`, `xp_events`, `quests`, `quest_progress`, `badges`, `user_badges`, `streaks`, `community_challenges`, `challenge_progress`, `leaderboards`, `seasons`, `rewards`, and `reward_claims`.
+
+### Anti-gaming and safety
+
+Do not reward users for actions that could encourage excessive irrigation, unsafe chemical use, over-fertilization or fabricated field records. Reward efficiency, verified improvement, early detection, healthy crop outcomes, timely maintenance and evidence-backed learning instead.
+
+Examples:
+
+- **Water Guardian** — keep irrigation inside a crop-specific water budget.
+- **Pest Scout** — submit verified pest or disease observations early.
+- **Sensor Steward** — maintain reliable connected devices.
+- **Soil Builder** — complete verified regenerative soil practices.
+- **Healthy Harvest** — reach harvest readiness without unresolved critical alerts.
+- **Climate-Smart Farmer** — adapt field decisions to weather and water data.
+- **Community Water Challenge** — cooperatively reduce avoidable water use.
