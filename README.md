@@ -102,3 +102,62 @@ Examples:
 - **Healthy Harvest** — reach harvest readiness without unresolved critical alerts.
 - **Climate-Smart Farmer** — adapt field decisions to weather and water data.
 - **Community Water Challenge** — cooperatively reduce avoidable water use.
+
+
+## Farm RPG system
+
+The gamification layer is structured as a farm role-playing system tied to real agronomic state.
+
+### Evolving fields
+
+Each real field has a persistent RPG profile with:
+- field level
+- XP
+- crop stage
+- crop-health state
+- water-efficiency state
+- scouting coverage
+- device reliability
+- unlocked traits
+- seasonal history
+- harvest-quality history
+
+Field progression should be driven by verified outcomes such as healthy crop development, efficient water use, successful early intervention, sensor reliability, completion of crop-stage tasks and harvest quality.
+
+### Crop health states
+
+Crops can expose game-friendly states such as Thriving, Stable, Watch, Stressed, Recovering, At Risk and Harvest Ready. These labels should be derived from real agronomic signals and must never hide the underlying measurements or confidence.
+
+### Sensor companions
+
+Connected devices can appear as companion characters while retaining their engineering identity. Examples include Maji the Soil Scout, Jua the Climate Sentinel, Nyuki the Crop Watcher and Mlinzi the Gateway Guardian. Companion bond levels rise through verified uptime, useful observations and successful decisions. Perks are motivational UI effects and should not bypass safety rules or alter raw sensor data.
+
+### Seasonal missions
+
+Missions follow the actual crop cycle: establishment, vegetative growth, flowering, fruiting/grain filling, maturity and harvest. Mission generation can use crop type, planting date, phenology, weather, satellite health, sensor events, scouting history and unresolved risks.
+
+### Cooperative leagues
+
+Players can compete individually or through cooperatives. Ranking inputs should emphasize verified outcomes such as water efficiency, crop health, early pest detection, learning, regenerative practices, harvest quality and data reliability rather than farm size alone.
+
+### Unlocks and rewards
+
+Verified improvement can unlock:
+- farm titles
+- equipment skins
+- sensor/greenhouse themes
+- seasonal trophies
+- cooperative ranking badges
+- completion certificates
+- sponsor-funded practical rewards such as seed discounts, sensor credits, soil tests, agronomy sessions, insurance incentives or input vouchers
+
+Practical rewards should be partner-funded and verified server-side.
+
+### Recommended RPG collections
+
+Recommended additional collections include:
+`farm_rpg_profiles`, `field_levels`, `field_traits`, `crop_state_history`, `companions`, `companion_bonds`, `season_campaigns`, `season_missions`, `mission_progress`, `league_entries`, `league_seasons`, `cosmetics`, `unlocks`, `reward_catalog`, `reward_claims`, and `verification_events`.
+
+### Anti-cheat and integrity
+
+All XP, level, league and reward events should be created by trusted backend logic. Evidence should reference source events such as telemetry IDs, satellite observations, timestamped images, verified harvests, agronomist review or learning completion. Client-side taps must never directly mint XP or practical rewards.
