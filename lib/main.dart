@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'rpg/live_rpg_page.dart';
 
-void main() => runApp(const FarmersBuddyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(const FarmersBuddyApp());
+}
 
 class FarmersBuddyApp extends StatelessWidget {
   const FarmersBuddyApp({super.key});
@@ -35,7 +41,7 @@ class _FarmShellState extends State<FarmShell> {
     AutomationPage(),
     IntelligencePage(),
     MarketPage(),
-    GamePage(),
+    const FarmRpgGate(),
   ];
 
   @override
