@@ -130,3 +130,12 @@ export const syncLeagueEntry = onDocumentWritten(
     }, { merge: true });
   }
 );
+
+
+export { ingestIotTelemetry } from './pipelines/iot';
+export { processSatelliteObservation } from './pipelines/satellite';
+export { processCropScan } from './pipelines/crop_scan';
+export { scoreWeatherAwareIrrigation } from './pipelines/weather_irrigation';
+export { processHarvestRecord } from './pipelines/harvest';
+export { processAgronomistVerification } from './pipelines/agronomist';
+export { submitAgronomistVerification } from './pipelines/agronomist_callable';
