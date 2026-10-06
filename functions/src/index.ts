@@ -143,3 +143,4 @@ export { submitAgronomistVerification } from './pipelines/agronomist_callable';
 export { deriveWeatherWaterTarget } from './pipelines/weather_target';
 export { ingestWeatherSnapshot, ingestSatelliteObservation, ingestCropScanResult } from './pipelines/trusted_ingest';
 export { submitHarvestRecord, verifyHarvestRecord } from './pipelines/harvest_callable';
+export { submitCropScan, dispatchCropScan } from './pipelines/crop_scan_dispatch';
