@@ -1,0 +1,29 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "field_levels",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "farmId", "order": "ASCENDING"},
+        {"fieldPath": "level", "order": "DESCENDING"}
+      ]
+    },
+    {
+      "collectionGroup": "season_missions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "farmId", "order": "ASCENDING"},
+        {"fieldPath": "status", "order": "ASCENDING"}
+      ]
+    },
+    {
+      "collectionGroup": "league_entries",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "seasonId", "order": "ASCENDING"},
+        {"fieldPath": "score", "order": "DESCENDING"}
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
