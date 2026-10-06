@@ -3,21 +3,73 @@ service cloud.firestore {
   match /databases/{database}/documents {
     function signedIn() { return request.auth != null; }
     function ownsFarm(farmId) {
-      return signedIn() && exists(/databases/$(database)/documents/farms/$(farmId)) &&
-        request.auth.uid in get(/databases/$(database)/documents/farms/$(farmId)).data.memberUids;
+      return signedIn()
+        && exists(/databases/$(database)/documents/farms/$(farmId))
+        && request.auth.uid in get(/databases/$(database)/documents/farms/$(farmId)).data.memberUids;
     }
-    match /users/{uid} { allow read, write: if signedIn() && request.auth.uid == uid; }
+
+    match /users/{uid} {
+      allow read, write: if signedIn() && request.auth.uid == uid;
+    }
+
     match /farms/{farmId} {
       allow read: if ownsFarm(farmId);
       allow create: if signedIn() && request.auth.uid in request.resource.data.memberUids;
       allow update: if ownsFarm(farmId);
-      match /{document=**} { allow read, write: if ownsFarm(farmId); }
+      match /{document=**} {
+        allow read, write: if ownsFarm(farmId);
+      }
     }
+
     match /actuation_commands/{id} {
-      allow read: if signedIn();
-      allow create: if signedIn() && request.resource.data.requestedBy == request.auth.uid;
+      allow read: if signedIn() && ownsFarm(resource.data.farmId);
+      allow create: if signedIn()
+        && request.resource.data.requestedBy == request.auth.uid
+        && ownsFarm(request.resource.data.farmId);
       allow update, delete: if false;
     }
-    match /audit_logs/{id} { allow read: if signedIn(); allow write: if false; }
+
+    // RPG progression is server-authoritative. Mobile clients may read their
+    // own farm state, but cannot mint XP, levels, bonds, league scores or rewards.
+    match /farm_rpg_profiles/{farmId} {
+      allow read: if ownsFarm(farmId);
+      allow write: if false;
+    }
+    match /field_levels/{id} {
+      allow read: if ownsFarm(resource.data.farmId);
+      allow write: if false;
+    }
+    match /companions/{id} {
+      allow read: if ownsFarm(resource.data.farmId);
+      allow write: if false;
+    }
+    match /season_missions/{id} {
+      allow read: if ownsFarm(resource.data.farmId);
+      allow write: if false;
+    }
+    match /verification_events/{id} {
+      allow read: if ownsFarm(resource.data.farmId);
+      allow write: if false;
+    }
+    match /league_entries/{id} {
+      allow read: if signedIn();
+      allow write: if false;
+    }
+    match /rewards/{id} {
+      allow read: if ownsFarm(resource.data.farmId);
+      allow write: if false;
+    }
+    match /reward_claims/{id} {
+      allow create: if signedIn()
+        && request.resource.data.requestedBy == request.auth.uid
+        && ownsFarm(request.resource.data.farmId);
+      allow read: if signedIn() && request.auth.uid == resource.data.requestedBy;
+      allow update, delete: if false;
+    }
+
+    match /audit_logs/{id} {
+      allow read: if signedIn();
+      allow write: if false;
+    }
   }
 }
