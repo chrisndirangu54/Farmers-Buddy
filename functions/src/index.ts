@@ -144,3 +144,4 @@ export { deriveWeatherWaterTarget } from './pipelines/weather_target';
 export { ingestWeatherSnapshot, ingestSatelliteObservation, ingestCropScanResult } from './pipelines/trusted_ingest';
 export { submitHarvestRecord, verifyHarvestRecord } from './pipelines/harvest_callable';
 export { submitCropScan, dispatchCropScan } from './pipelines/crop_scan_dispatch';
+export { bootstrapSuperAdmin, setUserAdminRole, updateSystemSetting, updateModelConfig, upsertApiSecret, disableApiSecret } from './admin';
