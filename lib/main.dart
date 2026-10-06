@@ -35,6 +35,7 @@ class _FarmShellState extends State<FarmShell> {
     AutomationPage(),
     IntelligencePage(),
     MarketPage(),
+    GamePage(),
   ];
 
   @override
@@ -59,6 +60,7 @@ class _FarmShellState extends State<FarmShell> {
           NavigationDestination(icon: Icon(Icons.tune_outlined), selectedIcon: Icon(Icons.tune), label: 'Control'),
           NavigationDestination(icon: Icon(Icons.psychology_alt_outlined), selectedIcon: Icon(Icons.psychology_alt), label: 'AI'),
           NavigationDestination(icon: Icon(Icons.show_chart), label: 'Market'),
+          NavigationDestination(icon: Icon(Icons.emoji_events_outlined), selectedIcon: Icon(Icons.emoji_events), label: 'Play'),
         ],
       ),
     );
@@ -301,6 +303,208 @@ class AiCard extends StatelessWidget {
             Text(text),
           ]),
         ),
+      ]),
+    ),
+  );
+}
+
+
+class GamePage extends StatelessWidget {
+  const GamePage({super.key});
+
+  static const quests = [
+    {'title':'Water Guardian', 'detail':'Keep irrigation within the crop water target for 3 days.', 'xp':'+180 XP', 'progress':0.67},
+    {'title':'Scout Before It Spreads', 'detail':'Complete 3 verified crop-health scans this week.', 'xp':'+120 XP', 'progress':0.33},
+    {'title':'Healthy Harvest', 'detail':'Reach harvest readiness with no unresolved high-risk alerts.', 'xp':'+350 XP', 'progress':0.76},
+    {'title':'Sensor Steward', 'detail':'Keep all connected farm devices healthy for 7 days.', 'xp':'+150 XP', 'progress':0.86},
+    {'title':'Climate-Smart Week', 'detail':'Complete weather-aware field tasks without unnecessary watering.', 'xp':'+240 XP', 'progress':0.58},
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        const Text('Farm League', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800)),
+        const SizedBox(height: 4),
+        Text(
+          'Earn progress for verified agronomic actions, efficient resource use, crop-health improvements and learning.',
+          style: TextStyle(color: Colors.grey.shade700),
+        ),
+        const SizedBox(height: 14),
+        Container(
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(colors: [Color(0xFF123B22), Color(0xFF2E7D32)]),
+            borderRadius: BorderRadius.circular(22),
+          ),
+          child: const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Row(children: [
+              CircleAvatar(radius: 27, backgroundColor: Colors.white24, child: Icon(Icons.agriculture, color: Colors.white)),
+              SizedBox(width: 12),
+              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text('Level 12 • Regenerative Grower', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 17)),
+                SizedBox(height: 3),
+                Text('4,820 XP • 9-day verified streak', style: TextStyle(color: Colors.white70)),
+              ])),
+              Icon(Icons.local_fire_department, color: Colors.amberAccent),
+            ]),
+            SizedBox(height: 14),
+            ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(99)),
+              child: LinearProgressIndicator(value: 0.72, minHeight: 10, backgroundColor: Colors.white24),
+            ),
+            SizedBox(height: 6),
+            Text('680 XP to Level 13', style: TextStyle(color: Colors.white70, fontSize: 11)),
+          ]),
+        ),
+        const SizedBox(height: 16),
+        const Wrap(spacing: 9, runSpacing: 9, children: [
+          GameStat(icon: Icons.bolt, value:'4,820', label:'XP'),
+          GameStat(icon: Icons.local_fire_department, value:'9 days', label:'Streak'),
+          GameStat(icon: Icons.workspace_premium, value:'14', label:'Badges'),
+          GameStat(icon: Icons.water_drop, value:'12%', label:'Water saved'),
+        ]),
+        const SizedBox(height: 18),
+        const SectionTitle('Active quests'),
+        ...quests.map((q) => QuestCard(
+          title: q['title'] as String,
+          detail: q['detail'] as String,
+          xp: q['xp'] as String,
+          progress: q['progress'] as double,
+        )),
+        const SizedBox(height: 18),
+        const SectionTitle('Badges'),
+        const Wrap(spacing: 10, runSpacing: 10, children: [
+          BadgeCard(icon: Icons.water_drop, title:'Water Wise', subtitle:'Efficient irrigation'),
+          BadgeCard(icon: Icons.bug_report_outlined, title:'Pest Scout', subtitle:'Early verified detection'),
+          BadgeCard(icon: Icons.satellite_alt, title:'Sky Farmer', subtitle:'Remote-sensing streak'),
+          BadgeCard(icon: Icons.recycling, title:'Soil Builder', subtitle:'Regenerative practices'),
+          BadgeCard(icon: Icons.memory, title:'Device Keeper', subtitle:'Reliable sensors'),
+          BadgeCard(icon: Icons.school_outlined, title:'Agri Scholar', subtitle:'Learning quests'),
+        ]),
+        const SizedBox(height: 18),
+        const SectionTitle('Community challenges'),
+        const CommunityChallenge(
+          title:'County Water Challenge',
+          detail:'Collectively reduce avoidable irrigation by 100,000 L this month.',
+          progress:0.61,
+          reward:'Community badge + sponsor rewards',
+        ),
+        const CommunityChallenge(
+          title:'Pest Watch',
+          detail:'Submit 500 verified pest observations to improve early-warning coverage.',
+          progress:0.43,
+          reward:'Scout badge + leaderboard XP',
+        ),
+        const SizedBox(height: 18),
+        const SectionTitle('Fair-play rules'),
+        const Card(
+          child: Padding(
+            padding: EdgeInsets.all(14),
+            child: Text(
+              'XP is awarded by trusted backend events, not client taps. Higher-value achievements require evidence from IoT telemetry, satellite observations, timestamped photos, verified farm records or approved learning tasks. Unsafe over-irrigation, chemical misuse or fabricated observations should never produce rewards.',
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class GameStat extends StatelessWidget {
+  final IconData icon;
+  final String value, label;
+  const GameStat({super.key, required this.icon, required this.value, required this.label});
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    width: 155,
+    child: Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(children: [
+          Icon(icon),
+          const SizedBox(width: 9),
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(value, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16)),
+            Text(label, style: const TextStyle(fontSize: 10, color: Colors.grey)),
+          ]),
+        ]),
+      ),
+    ),
+  );
+}
+
+class QuestCard extends StatelessWidget {
+  final String title, detail, xp;
+  final double progress;
+  const QuestCard({super.key, required this.title, required this.detail, required this.xp, required this.progress});
+  @override
+  Widget build(BuildContext context) => Card(
+    child: Padding(
+      padding: const EdgeInsets.all(14),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          const CircleAvatar(child: Icon(Icons.flag_outlined)),
+          const SizedBox(width: 10),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(title, style: const TextStyle(fontWeight: FontWeight.w800)),
+            const SizedBox(height: 3),
+            Text(detail, style: const TextStyle(fontSize: 11)),
+          ])),
+          Text(xp, style: const TextStyle(fontWeight: FontWeight.w800)),
+        ]),
+        const SizedBox(height: 10),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(99),
+          child: LinearProgressIndicator(value: progress, minHeight: 8),
+        ),
+      ]),
+    ),
+  );
+}
+
+class BadgeCard extends StatelessWidget {
+  final IconData icon;
+  final String title, subtitle;
+  const BadgeCard({super.key, required this.icon, required this.title, required this.subtitle});
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    width: 165,
+    child: Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(children: [
+          CircleAvatar(radius: 22, child: Icon(icon)),
+          const SizedBox(height: 8),
+          Text(title, style: const TextStyle(fontWeight: FontWeight.w800), textAlign: TextAlign.center),
+          Text(subtitle, style: const TextStyle(fontSize: 9, color: Colors.grey), textAlign: TextAlign.center),
+        ]),
+      ),
+    ),
+  );
+}
+
+class CommunityChallenge extends StatelessWidget {
+  final String title, detail, reward;
+  final double progress;
+  const CommunityChallenge({super.key, required this.title, required this.detail, required this.progress, required this.reward});
+  @override
+  Widget build(BuildContext context) => Card(
+    child: Padding(
+      padding: const EdgeInsets.all(14),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          const Icon(Icons.groups_2_outlined),
+          const SizedBox(width: 8),
+          Expanded(child: Text(title, style: const TextStyle(fontWeight: FontWeight.w800))),
+        ]),
+        const SizedBox(height: 6),
+        Text(detail),
+        const SizedBox(height: 10),
+        LinearProgressIndicator(value: progress, minHeight: 8),
+        const SizedBox(height: 7),
+        Text(reward, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700)),
       ]),
     ),
   );
