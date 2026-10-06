@@ -205,3 +205,91 @@ then from the repository root:
 `firebase deploy --only functions,firestore:rules,firestore:indexes`
 
 Production ingestion services should create verified events only after validating their source, such as signed IoT telemetry, trusted satellite processing, verified crop scans, harvest records, agronomist/cooperative review or authenticated learning completion.
+
+
+## Physical farm → RPG verification pipelines
+
+Farmers Buddy now includes a normalized pipeline for turning physical-farm observations into trusted `verification_events`.
+
+### 1. ESP32 / IoT telemetry
+
+`ingestIotTelemetry` accepts signed telemetry from field gateways. It rejects stale payloads and invalid HMAC signatures, stores raw telemetry, and can emit:
+
+- `device_uptime`
+- `water_efficiency`
+
+Water-efficiency scoring no longer trusts a target supplied by the device. It reads the current server-generated target from `field_water_targets/{fieldId}`.
+
+### 2. Weather-derived irrigation target
+
+`deriveWeatherWaterTarget` converts trusted `weather_snapshots` into a field water target using:
+
+- ET0
+- crop coefficient
+- effective rainfall
+- field area
+- soil-moisture correction
+- forecast confidence
+
+The target is stored in `field_water_targets` and is used by IoT scoring.
+
+### 3. Satellite processing
+
+External EO workers can post signed results through `ingestSatelliteObservation`. The resulting `satellite_observations` are quality-gated by cloud fraction and provider quality flags before `processSatelliteObservation` can emit a `crop_health_improvement` event.
+
+### 4. Camera crop diagnosis
+
+The mobile app can create a scan job through `submitCropScan` using a Firebase Storage path. `dispatchCropScan` sends that job to a configured external crop-diagnosis worker. The worker returns signed normalized results through `ingestCropScanResult`.
+
+A crop result only becomes `verified_scout_observation` when confidence and review/model-trust conditions are satisfied.
+
+### 5. Harvest records
+
+Farm members submit harvests through `submitHarvestRecord`. Harvests start as `pending`. An authenticated user with the `agronomist` role can verify them through `verifyHarvestRecord`. Verified harvests emit `harvest_quality` events.
+
+### 6. Agronomist verification
+
+`submitAgronomistVerification` checks Firebase Authentication and the verifier's `agronomist` role before creating an approval record. Approved records are converted into trusted verification events by `processAgronomistVerification`.
+
+### 7. Trusted weather, satellite and AI ingestion
+
+The backend exposes HMAC-protected normalized ingestion endpoints for:
+
+- weather snapshots
+- satellite observations
+- crop-diagnosis results
+
+These adapters allow any provider or worker to integrate without giving it direct access to RPG collections.
+
+### Required backend environment variables
+
+Configure these with your Firebase/Google Cloud secret-management workflow:
+
+- `IOT_SHARED_SECRET`
+- `WEATHER_INGEST_SECRET`
+- `SATELLITE_INGEST_SECRET`
+- `CROP_SCAN_INGEST_SECRET`
+- `CROP_DIAGNOSIS_ENDPOINT`
+- `CROP_DIAGNOSIS_TOKEN`
+
+Do not store these values in Flutter, GitHub, firmware source or public configuration files.
+
+### Event flow
+
+```text
+ESP32 / Weather / Satellite / Camera / Harvest / Agronomist
+                       ↓
+              trusted source adapter
+                       ↓
+            normalized source document
+                       ↓
+           validation / quality gating
+                       ↓
+              verification_events
+                       ↓
+             processVerificationEvent
+                       ↓
+ farm XP + field levels + companions + league + rewards
+```
+
+This design preserves source provenance through `source`, `sourceRef`, timestamps, confidence/quality fields and verifier identifiers.
