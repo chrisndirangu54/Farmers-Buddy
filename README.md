@@ -161,3 +161,47 @@ Recommended additional collections include:
 ### Anti-cheat and integrity
 
 All XP, level, league and reward events should be created by trusted backend logic. Evidence should reference source events such as telemetry IDs, satellite observations, timestamped images, verified harvests, agronomist review or learning completion. Client-side taps must never directly mint XP or practical rewards.
+
+## Live Firebase RPG
+
+The Farm RPG is now wired for live Firebase state.
+
+### Live client streams
+
+The Flutter RPG screen listens to:
+
+- `farm_rpg_profiles/{farmId}`
+- `field_levels`
+- `companions`
+- `season_missions`
+- `league_entries`
+- `rewards`
+
+The app resolves the signed-in user's first accessible farm from the `farms` collection and streams RPG updates in real time.
+
+### Server-authoritative progression
+
+XP and progression are processed in Firebase Cloud Functions from `verification_events`. The client cannot write directly to XP, levels, companion bonds, league scores or reward state.
+
+Current verified event types include:
+
+- `water_efficiency`
+- `crop_health_improvement`
+- `verified_scout_observation`
+- `device_uptime`
+- `harvest_quality`
+- `learning_completion`
+
+The server updates farm XP/levels, selected field progression, companion bond state and cooperative league scores transactionally.
+
+### Required deployment
+
+After running `flutterfire configure`, deploy the backend with:
+
+`cd functions && npm install && npm run build`
+
+then from the repository root:
+
+`firebase deploy --only functions,firestore:rules,firestore:indexes`
+
+Production ingestion services should create verified events only after validating their source, such as signed IoT telemetry, trusted satellite processing, verified crop scans, harvest records, agronomist/cooperative review or authenticated learning completion.
