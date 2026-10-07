@@ -145,3 +145,6 @@ export { ingestWeatherSnapshot, ingestSatelliteObservation, ingestCropScanResult
 export { submitHarvestRecord, verifyHarvestRecord } from './pipelines/harvest_callable';
 export { submitCropScan, dispatchCropScan } from './pipelines/crop_scan_dispatch';
 export { bootstrapSuperAdmin, setUserAdminRole, updateSystemSetting, updateModelConfig, upsertApiSecret, disableApiSecret } from './admin';
+
+export { authorizeDroneMission, approveFarmOperation, ingestDroneReport } from './autonomy';
+export { materializeFarmOperations } from './operation_planner';
