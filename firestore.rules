@@ -89,6 +89,31 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
+    match /drone_missions/{id} {
+      allow read: if signedIn() && ownsFarm(resource.data.farmId);
+      allow create: if signedIn() && ownsFarm(request.resource.data.farmId);
+      allow update: if signedIn() && ownsFarm(resource.data.farmId)
+        && request.resource.data.status == resource.data.status
+        && request.resource.data.safetyState == resource.data.safetyState;
+      allow delete: if false;
+    }
+    match /drone_reports/{id} {
+      allow read: if signedIn() && ownsFarm(resource.data.farmId);
+      allow write: if false;
+    }
+    match /farm_operations/{id} {
+      allow read: if signedIn() && ownsFarm(resource.data.farmId);
+      allow create: if signedIn() && ownsFarm(request.resource.data.farmId);
+      allow update: if signedIn() && ownsFarm(resource.data.farmId)
+        && request.resource.data.status == resource.data.status;
+      allow delete: if false;
+    }
+    match /farm_operation_templates/{id} {
+      allow read, create, update: if signedIn()
+        && ownsFarm((resource.data.farmId != null ? resource.data.farmId : request.resource.data.farmId));
+      allow delete: if false;
+    }
+
     match /audit_logs/{id} {
       allow read: if signedIn();
       allow write: if false;
