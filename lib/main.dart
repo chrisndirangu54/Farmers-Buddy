@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'rpg/live_rpg_page.dart';
 import 'admin/super_admin_page.dart';
+import 'autonomy/autonomy_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,6 +44,7 @@ class _FarmShellState extends State<FarmShell> {
     IntelligencePage(),
     MarketPage(),
     const FarmRpgGate(),
+    const FarmAutonomyGate(),
   ];
 
   @override
@@ -73,6 +75,7 @@ class _FarmShellState extends State<FarmShell> {
           NavigationDestination(icon: Icon(Icons.psychology_alt_outlined), selectedIcon: Icon(Icons.psychology_alt), label: 'AI'),
           NavigationDestination(icon: Icon(Icons.show_chart), label: 'Market'),
           NavigationDestination(icon: Icon(Icons.emoji_events_outlined), selectedIcon: Icon(Icons.emoji_events), label: 'Play'),
+          NavigationDestination(icon: Icon(Icons.flight_takeoff), selectedIcon: Icon(Icons.precision_manufacturing), label: 'Autonomy'),
         ],
       ),
     );
