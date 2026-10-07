@@ -4,24 +4,84 @@
       "collectionGroup": "field_levels",
       "queryScope": "COLLECTION",
       "fields": [
-        {"fieldPath": "farmId", "order": "ASCENDING"},
-        {"fieldPath": "level", "order": "DESCENDING"}
+        {
+          "fieldPath": "farmId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "level",
+          "order": "DESCENDING"
+        }
       ]
     },
     {
       "collectionGroup": "season_missions",
       "queryScope": "COLLECTION",
       "fields": [
-        {"fieldPath": "farmId", "order": "ASCENDING"},
-        {"fieldPath": "status", "order": "ASCENDING"}
+        {
+          "fieldPath": "farmId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        }
       ]
     },
     {
       "collectionGroup": "league_entries",
       "queryScope": "COLLECTION",
       "fields": [
-        {"fieldPath": "seasonId", "order": "ASCENDING"},
-        {"fieldPath": "score", "order": "DESCENDING"}
+        {
+          "fieldPath": "seasonId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "score",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "drone_missions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "farmId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "scheduledAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "farm_operations",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "farmId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "scheduledAt",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "drone_reports",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "farmId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        }
       ]
     }
   ],
