@@ -1,5 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+class FarmAutonomyGate extends StatelessWidget {
+  const FarmAutonomyGate({super.key});
+  @override Widget build(BuildContext context){
+    final user=FirebaseAuth.instance.currentUser;
+    if(user==null)return const Center(child:Text('Sign in to use farm autonomy.'));
+    return StreamBuilder<QuerySnapshot<Map<String,dynamic>>>(
+      stream:FirebaseFirestore.instance.collection('farms').where('memberUids',arrayContains:user.uid).limit(1).snapshots(),
+      builder:(context,snap){
+        if(!snap.hasData)return const Center(child:CircularProgressIndicator());
+        if(snap.data!.docs.isEmpty)return const Center(child:Text('No farm linked to this account.'));
+        return FarmAutonomyPage(farmId:snap.data!.docs.first.id);
+      },
+    );
+  }
+}
+
 import 'models.dart';
 import 'service.dart';
 
