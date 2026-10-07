@@ -293,3 +293,37 @@ ESP32 / Weather / Satellite / Camera / Harvest / Agronomist
 ```
 
 This design preserves source provenance through `source`, `sourceRef`, timestamps, confidence/quality fields and verifier identifiers.
+
+
+## Farm autonomy, drones and operations
+
+Farmers Buddy now includes a farm-autonomy module for autonomous drone monitoring, drone reporting, planned spraying missions and recurring farm operations.
+
+### Drone monitoring
+Monitoring missions can be planned for crop health, canopy gaps, irrigation anomalies, water points, fences, livestock, infrastructure and other farm observations. Verified drone systems can submit signed reports to the backend, which are stored in `drone_reports` and linked back to the mission.
+
+### Spraying missions
+Spraying missions are represented separately from monitoring. They are created in a non-executable planned state and require a backend authorization step. Authorization requires geofence review, weather review, people/livestock clearance, payload verification and operator authorization. The client cannot directly change a mission into an authorized state.
+
+### Farm operations planner
+The system supports recurring or planned operations including spraying, milking, feeding, supply monitoring, irrigation, fertilization, harvesting, maintenance and livestock checks.
+
+`farm_operation_templates` can define recurring operations with `nextRunAt`, `intervalMinutes`, `automationMode`, `targetZone` and an assigned machine or asset. A scheduled Cloud Function materializes due operations every 30 minutes. Spraying tasks are automatically created as requiring approval.
+
+### Mission lifecycle
+```text
+planned
+  ↓
+safety review
+  ↓
+authorized
+  ↓
+executed by approved external/autonomous equipment
+  ↓
+signed mission report
+  ↓
+drone_reports + farm records + analytics
+```
+
+### Required secret
+Configure `DRONE_INGEST_SECRET` for the signed drone-report ingestion endpoint. Do not store this value in the Flutter client or drone mission documents.
