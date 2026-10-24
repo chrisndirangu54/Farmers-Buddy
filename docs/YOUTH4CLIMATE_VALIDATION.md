@@ -1,17 +1,17 @@
-# Farmers Buddy — Youth4Climate evidence review
+# Farmers Buddy â€” Youth4Climate evidence review
 
 Reviewed 24 October 2026, Nairobi time. Application remains a draft; no submission was made.
 
 ## Official requirements
 
-[ICPAC event page](https://www.icpac.net/events/youth4climate-services-innovation-hackathon/) lists a 6 November 2026 deadline and a demonstration requirement. The event runs 8–10 December in Nairobi. The applicant must confirm eligibility (age 18–35, IGAD nationality or residence, availability to attend).
+[ICPAC event page](https://www.icpac.net/events/youth4climate-services-innovation-hackathon/) lists a 6 November 2026 deadline and a demonstration requirement. The event runs 8â€“10 December in Nairobi. The applicant must confirm eligibility (age 18â€“35, IGAD nationality or residence, availability to attend).
 
-The [official concept note](https://www.icpac.net/documents/1149/Concept_Note_Youth4Climate_Services_Innovation_Hackathon_2026.pdf) accepts an existing functional or pilot-stage climate solution and supporting prototype, screenshot, video or pilot evidence. No specific video duration, exclusive technology stack or public-repository requirement was found in these documents. The application form accepts up to five evidence files, each at most 100 MB. Four files (walkthrough and three screenshots) were attached and visible in the saved draft. Gender and country of operation remain unselected; other restored identity/eligibility details need the user's final review.
+The [official concept note](https://www.icpac.net/documents/1149/Concept_Note_Youth4Climate_Services_Innovation_Hackathon_2026.pdf) accepts an existing functional or pilot-stage climate solution and supporting prototype, screenshot, video or pilot evidence. No specific video duration, exclusive technology stack or public-repository requirement was found in these documents. The application form accepts up to five evidence files, each at most 100 MB. Four files (walkthrough and three screenshots) were attached and visible in the saved draft. Male and Kenya were selected at the user's explicit instruction. Other restored identity/eligibility details need final review.
 
 ## Verified in this session
 
 * The deployed URL https://farmers-buddy-261012.web.app/ loaded and Firebase email/password sign-in succeeded using the user's authorized account. The existing record is explicitly labeled `TEST - synthetic Nairobi field`, with one hectare and sample maize data.
-* Its live Open-Meteo forecast loaded seven daily rows, 24–30 October. The initial observation timestamp was `2026-10-24T07:45`; a later refresh during recording showed `2026-10-24T08:00`. Today's ET0 was 5.35 mm/day and forecast rainfall 0.6 mm. The application displayed `Forecast saved` after a snapshot save. No direct database inspection was performed.
+* Its live Open-Meteo forecast loaded seven daily rows, 24â€“30 October. The initial observation timestamp was `2026-10-24T07:45`; a later refresh during recording showed `2026-10-24T08:00`. Today's ET0 was 5.35 mm/day and forecast rainfall 0.6 mm. The application displayed `Forecast saved` after a snapshot save. No direct database inspection was performed.
 * The water calculator returned **59,375 L/day** for 1 ha, ET0 5.35, crop coefficient 1, assumed effective rainfall 0.6 and efficiency 0.8. Increasing assumed effective rainfall to 10 returned **0 L/day**. Forecast rainfall was used as an explicit test assumption, not asserted to equal effective rainfall in a real field.
 * The public repository is https://github.com/chrisndirangu54/Farmers-Buddy at base commit `6eaced8c2f589e2a3301a550987dabe2b66f533d`.
 * A newer local working tree contains field mapping, an Open-Meteo weather client, water planning and related tests that are missing from that public base. It was copied into an isolated workspace for inspection and tests; original working files were not changed. The exact deployed build commit has not been established.
@@ -23,7 +23,7 @@ The automated tests use isolated local source and in-memory test doubles. Separa
 
 The inspected client calls Open-Meteo at a selected field's coordinates and requests seven days of temperature, precipitation and reference evapotranspiration. Its water calculation is:
 
-`max(0, ET0_mm_day × crop_coefficient − effective_rain_mm_day) × area_ha × 10000 ÷ irrigation_efficiency`
+`max(0, ET0_mm_day Ã— crop_coefficient âˆ’ effective_rain_mm_day) Ã— area_ha Ã— 10000 Ã· irrigation_efficiency`
 
 Fresh screenshots accompany this report. The captioned, silent walkthrough records actual browser screenshots sampled during live interaction, retaining wall-clock timing and holding the last frame during capture gaps. It shows the water calculation, rainfall-to-zero case, synthetic field label, genuine weather retrieval and forecast-save confirmation. The recording provenance file documents the sampling method and timing. It is software demonstration evidence, not a simulated product mockup or a real-farm pilot.
 
